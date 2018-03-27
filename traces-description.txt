@@ -1,0 +1,23 @@
+The files are using this name convention:  17-03-01_00-00-03-graph.R  (01 in bold is the day of the month, and 00-00 is the hour in that day, 03 at the end is nothing, a random number).
+
+Now I am going to explain some of the metrics you might need or find useful (the ones in the bold are used in the paper) :
+
+g <- graph(n=70, c(35,59,35,36,35,30 )  - this is the topology graph (igraph in R). The graph tells you that there 70 nodes and how they are connected, i.e.,  node 35 is connected with 59, with 36 and 30. Every other metric in the .R files follows the ordering of this graph.
+
+E(g)$bw <- c(54.40,65.39,25.09) - this is the bandwidth of the links in that capture (the most important metric). So, the bandwidth of the link connecting node 35 with 39 is 54.40 Mbps, bandwidth of link connecting node 35 with 36 is 65.39. So, each value you map with g above.
+
+E(g)$rtt  - this is RTT of the links. Again it follows the g graph. It is in miliseconds.
+
+E(g)$power <- node antenna power..I think this is in decibel dB
+
+V(g)$label  - the names of the nodes
+
+V(g)$x and y  - are the geo-coordinates of the nodes
+
+
+I think these metrics are enough for the moment. For you I guess bandwidth (E(g)$bw) is the one that you will consider.
+
+
+
+Let me know if you find some difficulties in reading the datasets.
+

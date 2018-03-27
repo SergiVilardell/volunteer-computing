@@ -1,0 +1,23 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1521719127434.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "A1E2040",
+    "lastKnownWriteTime" : 1521733306,
+    "last_content_update" : 1521733306739,
+    "path" : "~/Doc/volunteer-computing/network-functions.R",
+    "project_path" : "network-functions.R",
+    "properties" : {
+        "cursorPosition" : "12,40",
+        "scrollLine" : "0",
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 5,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
