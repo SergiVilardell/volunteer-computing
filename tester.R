@@ -14,7 +14,7 @@ plot(node.active.time)
 consecutive.active.time <- sapply(network.timeline, function(x) rle(x)$lengths)
 consecutive.value <- sapply(network.timeline, function(x) rle(x)$value)
 adjacency_matrices <- compute_adjacency_matrices(file_list)
-
+network.connectivity <- compute_network_connectivity(file_list)
 
 a <- unlist(consecutive.active.time)
 b <- unlist(consecutive.value)
@@ -33,21 +33,6 @@ active.consecutives <- a[-c]
 
 get.edgelist(g)
 
-adj <- as_adjacency_matrix(g, attr = "bw", sparse = T)
-l <- list()
-l[1] <- adj
-z <- as.numeric(table(active.consecutives))
-l <- as.numeric(names(table(active.consecutives)))
-
-plot(l, z, log= "xy")
-
-z <- hist(log(active.consecutives))
-z <- hist(active.consecutives, breaks = exp(z$breaks))
-plot(z$mids, z$counts, log = "xy")
-
-hist(active.consecutives)
-barplot(table(active.consecutives), log= "y")
-
 nodes <- vector()
 edges.bw <- list()
 for(i in 1:735){
@@ -55,3 +40,27 @@ for(i in 1:735){
   edges.bw[i] <- vcount(g)
   
 }
+
+ 
+mean.matrix <- matrix(nrow = 74, ncol = 74)
+
+sd.matrix <- matrix(nrow = 74, ncol = 74)
+
+for(j in 1:74){
+  for(k in 1:74){
+    b <- vector()
+    for( i in 1:735){
+      if(dim(adjacency_matrices[[i]])[1] < k | dim(adjacency_matrices[[i]])[1] < j)
+      {
+        break()
+      }
+      else{
+      b[i] <- adjacency_matrices[[i]][j,k]
+      sd.matrix[j,k] <- sd(b[b != 0]) 
+      mean.matrix[j,k] <- mean(b[b != 0])
+      }
+    }
+  }
+}
+
+

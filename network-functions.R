@@ -21,3 +21,22 @@ compute_network_timeline <- function(failed.nodes, active.nodes){
   
   return(network.timeline)
 }
+
+compute_network_connectivity <- function(file_list){
+  
+  network.timeline.connectivity <- as.data.frame(matrix(nrow = 735, ncol = 74))
+  for(i in 1:735){
+    source(file_list[i])
+    a <- degree(g)
+    for(j in 1:74)
+      if(length(a) < j){
+        network.timeline.connectivity[i,j] <- NA
+      }
+      else{
+        network.timeline.connectivity[i,j] <- a[j]
+      }
+    
+    
+  }
+  return(network.timeline.connectivity)
+}
