@@ -73,3 +73,45 @@ compute_adjacency_matrices <- function(file_list){
   }
   return(adjacency_matrices)
 }
+
+#Compute the total bandwidth selecting each node as a microserver
+
+one_server_total_bandwidth <- function(g){
+  
+  total.bw <- c()
+  
+  for(j in 1:length(V(g))){
+    
+    #Check if the node has any connections
+    if(degree(g)[j] == 0){next}  
+    
+    paths <- all_shortest_paths(g, j, V(g))$res
+    
+    min.bw <- c()
+    last.node <- c()
+    
+    #Select the paths with maximum bandwith
+    
+    for(i in 1:length(paths)){
+      if(i == j){next}
+      path.bw <- E(g, path = paths[[i]])$bw
+      clean.path <- path.bw[!is.na(path.bw)] 
+      if(length(clean.path) != 0){ #Some paths are empty when cleaned
+        min.bw[i] <- min(clean.path)
+        nodes <- paths[[i]]
+        last.node[i] <- nodes[length(nodes)]
+      }
+    }
+    
+    #Get the path with the best bandwidth
+    all.paths <- data.frame(last.node, min.bw) %>% 
+      group_by(last.node) %>% 
+      summarise(min.bw = max(min.bw)) %>% 
+      filter(!is.na(last.node))
+    
+    total.bw[j] <- sum(all.paths$min.bw)
+    
+  }
+  
+  return(total.bw)
+}

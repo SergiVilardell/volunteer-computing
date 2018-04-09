@@ -64,3 +64,14 @@ for(j in 1:74){
 }
 
 
+plot(network.connectivity[,25])
+
+r <- c()
+for(i in 1:10){
+  source(file_list[i])
+  t <- one_server_total_bandwidth(g)
+  d <- degree(g)
+  r[i] <- summary(lm(t~ d))$r.squared
+}
+
+
