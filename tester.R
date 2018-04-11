@@ -1,4 +1,5 @@
 library(tidyverse)
+library(viridis)
 source("graph-functions.R")
 source("network-functions.R")
 
@@ -103,7 +104,23 @@ else{
 }
 }
 
-plot(min.bw, total.bw)
 
-linear <- lm(total.bw ~ max.bw)
-summary(linear)
+max.bw <- c()
+for(i in 1:length(total.bw)){
+  a <- g[i, as.vector(neighbors(g, i, mode = "out")), attr = "bw"]
+  a <- a[!is.na(a)]
+  if(length(a)!= 0){
+    max.bw[i] <- max(a)
+  }
+  else{
+    max.bw[i] <- NA
+  }
+}
+
+
+a <- data.frame(min.bw, max.bw, total.bw)
+
+
+ggplot(a, aes(x = as.factor(min.bw), y = as.factor(max.bw)))+
+  geom_tile(aes(fill = total.bw))+
+  scale_fill_viridis(discrete = F)
