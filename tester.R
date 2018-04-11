@@ -67,11 +67,43 @@ for(j in 1:74){
 plot(network.connectivity[,25])
 
 r <- c()
+
+
 for(i in 1:10){
-  source(file_list[i])
-  t <- one_server_total_bandwidth(g)
+  source(file_list[15])
+  total.bw <- one_server_total_bandwidth(g)
   d <- degree(g)
-  r[i] <- summary(lm(t~ d))$r.squared
+  #r[i] <- summary(lm(t~ d))$r.squared
 }
 
+total.bw <- total.bw[!is.na(total.bw)]
+d <- d[d!=0]
+plot(total.p, total.bw)
 
+model <- lm(d ~ 1/total.p)
+
+
+rs <- data.frame(d, total.p)
+t[[1]]
+
+
+#Best worse bandwidth of NN
+
+total.bw <- one_server_total_bandwidth(g)
+
+min.bw <- c()
+for(i in 1:length(total.bw)){
+a <- g[i, as.vector(neighbors(g, i, mode = "out")), attr = "bw"]
+a <- a[!is.na(a)]
+if(length(a)!=0){
+min.bw[i] <- min(a)
+}
+else{
+  min.bw[i] <- NA
+}
+}
+
+plot(min.bw, total.bw)
+
+linear <- lm(total.bw ~ max.bw)
+summary(linear)

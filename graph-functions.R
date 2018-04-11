@@ -78,7 +78,8 @@ compute_adjacency_matrices <- function(file_list){
 
 one_server_total_bandwidth <- function(g){
   
-  total.bw <- c()
+  
+  res <- c()
   
   for(j in 1:length(V(g))){
     
@@ -89,6 +90,7 @@ one_server_total_bandwidth <- function(g){
     
     min.bw <- c()
     last.node <- c()
+    path.length <- c()
     
     #Select the paths with maximum bandwith
     
@@ -100,6 +102,7 @@ one_server_total_bandwidth <- function(g){
         min.bw[i] <- min(clean.path)
         nodes <- paths[[i]]
         last.node[i] <- nodes[length(nodes)]
+        path.length[i] <- as.numeric(length(paths[[i]]))
       }
     }
     
@@ -109,9 +112,10 @@ one_server_total_bandwidth <- function(g){
       summarise(min.bw = max(min.bw)) %>% 
       filter(!is.na(last.node))
     
-    total.bw[j] <- sum(all.paths$min.bw)
-    
+    total.bw<- sum(all.paths$min.bw)
+    #total.path.length <- sum(all.paths$path.length)
+    res[j] <- total.bw
   }
   
-  return(total.bw)
+  return(res)
 }
