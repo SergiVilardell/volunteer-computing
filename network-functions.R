@@ -43,4 +43,74 @@ compute_network_connectivity <- function(file_list){
 
 
 
+#Best worse bandwidth of NN
 
+top_nodes <- function(file_list){
+  
+  is.optimal <- c()
+  res <- c()
+  sampled.points <- c()
+  for( j in 1:2){
+    source(file_list[j])
+    total.bw <- one_server_total_bandwidth(g)
+    
+    min.bw <- c()
+    for(i in 1:length(total.bw)){
+      a <- g[i, as.vector(neighbors(g, i, mode = "out")), attr = "bw"]
+      a <- a[!is.na(a)]
+      if(length(a)!=0){
+        min.bw[i] <- min(a)
+      }
+      else{
+        min.bw[i] <- NA
+      }
+    }
+    
+    
+    max.bw <- c()
+    for(i in 1:length(total.bw)){
+      a <- g[i, as.vector(neighbors(g, i, mode = "out")), attr = "bw"]
+      a <- a[!is.na(a)]
+      if(length(a)!= 0){
+        max.bw[i] <- max(a)
+      }
+      else{
+        max.bw[i] <- NA
+      }
+    }
+    
+    
+    record.bw <- data.frame(min.bw, max.bw, total.bw)
+    
+    #Check if the top half pairs of min and max bw are the most promising solutions overall.
+    
+    best.min.bw <- record.bw %>% 
+      arrange(desc(min.bw))
+    
+    cut <- floor(dim(best.min.bw)[1]/2)
+    best.min.bw <- head(best.min.bw, cut)
+    
+    
+    best.max.bw <- record.bw %>% 
+      arrange(desc(max.bw))
+    
+    optimal <- sort(best.max.bw$total.bw, decreasing = T)[1]
+    
+    cut <- floor(dim(best.max.bw)[1]/2)
+    best.max.bw <- head(best.max.bw, cut)
+    
+    common <- inner_join(best.max.bw, best.min.bw)
+    
+    sorted.total.bw <- sort(total.bw, decreasing = T)
+    
+    sampled.points[j] <- dim(common)[1]/dim(record.bw)[1]
+    is.optimal[j] <- optimal %in% common$total.bw 
+    cut <- floor(length(sorted.total.bw)/10)
+    cuted.total.bw <- head(sorted.total.bw, cut) 
+    
+    top <- intersect(common$total.bw, cuted.total.bw)
+    
+    res[j] <- length(top)/cut
+  }
+  return(res)
+}

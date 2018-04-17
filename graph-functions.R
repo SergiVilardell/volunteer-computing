@@ -87,7 +87,7 @@ one_server_total_bandwidth <- function(g){
     if(degree(g)[j] == 0){next}  
     
     paths <- all_shortest_paths(g, j, V(g))$res
-    
+    if(length(paths) < 2){next}
     min.bw <- c()
     last.node <- c()
     path.length <- c()

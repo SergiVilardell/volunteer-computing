@@ -88,39 +88,15 @@ rs <- data.frame(d, total.p)
 t[[1]]
 
 
-#Best worse bandwidth of NN
-
-total.bw <- one_server_total_bandwidth(g)
-
-min.bw <- c()
-for(i in 1:length(total.bw)){
-a <- g[i, as.vector(neighbors(g, i, mode = "out")), attr = "bw"]
-a <- a[!is.na(a)]
-if(length(a)!=0){
-min.bw[i] <- min(a)
-}
-else{
-  min.bw[i] <- NA
-}
-}
 
 
-max.bw <- c()
-for(i in 1:length(total.bw)){
-  a <- g[i, as.vector(neighbors(g, i, mode = "out")), attr = "bw"]
-  a <- a[!is.na(a)]
-  if(length(a)!= 0){
-    max.bw[i] <- max(a)
-  }
-  else{
-    max.bw[i] <- NA
-  }
-}
-
-
-a <- data.frame(min.bw, max.bw, total.bw)
-
-
-ggplot(a, aes(x = as.factor(min.bw), y = as.factor(max.bw)))+
+#Plot the values of min, max and total bw
+ggplot(record.bw, aes(x = as.factor(min.bw), y = as.factor(max.bw)))+
   geom_tile(aes(fill = total.bw))+
   scale_fill_viridis(discrete = F)
+
+plot(min.bw, total.bw)
+
+plot(max.bw, total.bw)
+        
+res <- top_nodes(file_list[1:20])  
