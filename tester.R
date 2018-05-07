@@ -3,7 +3,6 @@ library(viridis)
 source("graph-functions.R")
 source("network-functions.R")
 
-
 path = "/home/bill/Doc/traces"
 file_list <- list.files(path, pattern = ".*\\.R", full.names=TRUE)
 #print.plots(file_list)
@@ -64,17 +63,12 @@ for(j in 1:74){
   }
 }
 
-
 plot(network.connectivity[,25])
 
-r <- c()
-
-
-for(i in 1:10){
-  source(file_list[15])
-  total.bw <- one_server_total_bandwidth(g)
-  d <- degree(g)
-  #r[i] <- summary(lm(t~ d))$r.squared
+tbw <- list()
+for(i in 1:200){
+  source(file_list[i])
+  tbw[[i]] <- one_server_total_bandwidth(g)
 }
 
 total.bw <- total.bw[!is.na(total.bw)]
@@ -83,12 +77,8 @@ plot(total.p, total.bw)
 
 model <- lm(d ~ 1/total.p)
 
-
 rs <- data.frame(d, total.p)
 t[[1]]
-
-
-
 
 #Plot the values of min, max and total bw
 ggplot(record.bw, aes(x = as.factor(min.bw), y = as.factor(max.bw)))+
@@ -100,3 +90,7 @@ plot(min.bw, total.bw)
 plot(max.bw, total.bw)
         
 res <- top_nodes(file_list[1:20])  
+
+
+
+

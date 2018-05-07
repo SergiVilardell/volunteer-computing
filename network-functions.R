@@ -50,7 +50,7 @@ top_nodes <- function(file_list){
   is.optimal <- c()
   res <- c()
   sampled.points <- c()
-  for( j in 1:2){
+  for( j in 1:200){
     source(file_list[j])
     total.bw <- one_server_total_bandwidth(g)
     
@@ -87,8 +87,8 @@ top_nodes <- function(file_list){
     best.min.bw <- record.bw %>% 
       arrange(desc(min.bw))
     
-    cut <- floor(dim(best.min.bw)[1]/2)
-    best.min.bw <- head(best.min.bw, cut)
+    cut <- floor(dim(best.min.bw)[1]/4)
+    best.min.bw <- best.min.bw[1:cut,] 
     
     
     best.max.bw <- record.bw %>% 
@@ -96,8 +96,8 @@ top_nodes <- function(file_list){
     
     optimal <- sort(best.max.bw$total.bw, decreasing = T)[1]
     
-    cut <- floor(dim(best.max.bw)[1]/2)
-    best.max.bw <- head(best.max.bw, cut)
+    cut <- floor(dim(best.max.bw)[1]/4)
+    best.max.bw <- best.max.bw[1:cut,]
     
     common <- inner_join(best.max.bw, best.min.bw)
     
@@ -106,11 +106,66 @@ top_nodes <- function(file_list){
     sampled.points[j] <- dim(common)[1]/dim(record.bw)[1]
     is.optimal[j] <- optimal %in% common$total.bw 
     cut <- floor(length(sorted.total.bw)/10)
-    cuted.total.bw <- head(sorted.total.bw, cut) 
+    cutted.total.bw <- sorted.total.bw[1:cut] 
     
-    top <- intersect(common$total.bw, cuted.total.bw)
+    top <- intersect(common$total.bw, cutted.total.bw)
     
     res[j] <- length(top)/cut
   }
   return(res)
 }
+
+
+
+top_min_nodes <- function(file_list){
+  
+  is.optimal <- c()
+  res <- c()
+  sampled.points <- c()
+  for( j in 1:600){
+    source(file_list[j])
+    total.bw <- one_server_total_bandwidth(g)
+    
+    min.bw <- c()
+    for(i in 1:length(total.bw)){
+      a <- g[i, as.vector(neighbors(g, i, mode = "out")), attr = "bw"]
+      a <- a[!is.na(a)]
+      if(length(a)!=0){
+        min.bw[i] <- min(a)
+      }
+      else{
+        min.bw[i] <- NA
+      }
+    }
+    
+    
+    
+    record.bw <- data.frame(min.bw, total.bw)
+    
+    #Check if the top half pairs of min and max bw are the most promising solutions overall.
+    
+    best.min.bw <- record.bw %>% 
+      arrange(desc(min.bw))
+    
+    cut <- floor(dim(best.min.bw)[1]/10)
+    best.min.bw <- best.min.bw[1:cut,] 
+    
+    optimal <- sort(best.min.bw$total.bw, decreasing = T)[1]
+    
+    sorted.total.bw <- sort(total.bw, decreasing = T)
+    
+    is.optimal[j] <- optimal %in% best.min.bw$total.bw 
+    cut <- floor(length(sorted.total.bw)/10)
+    cutted.total.bw <- sorted.total.bw[1:cut] 
+    
+    top <- intersect(best.min.bw$total.bw, cutted.total.bw)
+    
+    res[j] <- length(top)/cut
+  }
+  return(res)
+}
+
+for(i in 1:20){
+ts.plot(df[, i], gpars= list(col=rainbow(20) ))
+}
+

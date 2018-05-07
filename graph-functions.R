@@ -100,7 +100,7 @@ one_server_total_bandwidth <- function(g){
       clean.path <- path.bw[!is.na(path.bw)] 
       if(length(clean.path) != 0){ #Some paths are empty when cleaned
         min.bw[i] <- min(clean.path)
-        nodes <- paths[[i]]
+        nodes <- as.vector(paths[[i]])
         last.node[i] <- nodes[length(nodes)]
         path.length[i] <- as.numeric(length(paths[[i]]))
       }
